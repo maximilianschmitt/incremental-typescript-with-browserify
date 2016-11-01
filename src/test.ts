@@ -2,7 +2,7 @@
 
 class TestClass {
   fullName: string
-  constructor (firstName : string, lastName: string) {
+  constructor (firstName : string, lastName : string) {
     this.fullName = firstName + lastName
   }
 }

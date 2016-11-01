@@ -6,6 +6,6 @@ const babelify = require('babelify')
 
 browserify('./src/main.js')
   .plugin(tsify)
-  .transform(babelify, { allowJs: true, extensions: ['.ts'] })
+  .transform(babelify)
   .bundle()
   .pipe(process.stdout)
