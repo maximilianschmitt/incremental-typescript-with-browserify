@@ -1,68 +1,36 @@
-# Browserify and TypeScript
+# Incremental TypeScript with Browserify
 
-I'm trying to get TypeScript to work in an existing browserify project with
-[tsify](https://github.com/TypeStrong/tsify). I'm getting the following error:
+Here is a simple setup to incrementally add TypeScript to your browserify project.
 
-```text
-$ node browserify.js
+## 1. Install `tsify` and `typescript`
 
-events.js:154
-      throw er; // Unhandled 'error' event
-            ^
-SyntaxError: 'import' and 'export' may appear only with 'sourceType: module'
+```bash
+npm i tsify typescript -D
 ```
 
-Running `tsify` before `babelify` as suggested in [tsify's README](https://github.com/TypeStrong/tsify#syntaxerror-import-and-export-may-appear-only-with-sourcetype-module) didn't do anything for me.
-
-To try and debug this issue I created a minimal project where a `main.js` imports
-a `test.ts` file (trying to simulate the fact that I'm trying to add TypeScript
-incrementally to an existing JavaScript project):
-
-## main.js
+## 2. Add `tsify` as a *plugin* to your browserify configuration
 
 ```javascript
-import TestClass from './test.ts'
+'use strict'
 
-console.log(new TestClass('John', 'Doe'))
-```
+const browserify = require('browserify')
+const tsify = require('tsify')
+const babelify = require('babelify')
 
-## test.ts
-
-```typescript
-class TestClass {
-  fullName: string
-  constructor (firstName : string, lastName: string) {
-    this.fullName = firstName + lastName
-  }
-}
-
-export default TestClass
-```
-
-## browserify.js
-
-```javascript
-browserify('./src/main.js', { extensions: ['.ts'] })
+browserify('./src/main.js')
   .plugin(tsify)
   .transform(babelify)
   .bundle()
   .pipe(process.stdout)
 ```
 
-## .babelrc
-
-```json
-{
-  "presets": ["es2015", "stage-2"]
-}
-```
-
-## tsconfig.json
+## 3. Configure TypeScript
 
 ```json
 {
   "compilerOptions": {
-    "module": "es6",
+    "allowJs": true,
+    "module": "commonjs",
     "target": "es6",
     "sourceMap": true
   }
